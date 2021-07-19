@@ -9,7 +9,7 @@ class Auth {
     
   }
   _checkStatus(result){
-    if (result.ok) {
+    if (result) {
       return result
   } else {
       return Promise.reject(`Ошибка: ${result.status}`)
@@ -25,6 +25,7 @@ class Auth {
         body: JSON.stringify({email,password})
       })
       .then(result => {
+        
        return this._checkStatus(result)
     })
   

@@ -169,31 +169,30 @@ function App(props) {
     setloggedIn(true)
   }
   // ПОДЫМАЕМ СТЕИТ НА НАДО ПО ЗАДАНИЮ
-  const [inputEmailData,setinputEmailData] = React.useState({value:''})
-  const [inputPasswordData,setinputPasswordData] = React.useState({value:''})
+//   const [inputEmailData,setinputEmailData] = React.useState({value:''})
+//   const [inputPasswordData,setinputPasswordData] = React.useState({value:''})
 
 
-  function handleEmailChange(e){
+//   function handleEmailChange(e){
 
-    const {name, value} = e.target;
-    setinputEmailData({[name]: value })
+//     const {name, value} = e.target;
+//     setinputEmailData({[name]: value })
   
    
-}
-function handlePasswordChange(e){
+// }
+// function handlePasswordChange(e){
  
-    const {name, value} = e.target;
-    setinputPasswordData({[name]: value })
+//     const {name, value} = e.target;
+//     setinputPasswordData({[name]: value })
    
-}
+// }
 
   const [isSuccess,setisSuccess] = React.useState()
   const [stateOpenPopup,setstateOpenPopup] = React.useState()
 
   function onRegister (e){
-    e.preventDefault()
-    const {email}= inputEmailData;
-    const {password}= inputPasswordData;
+    const {email}= e;
+    const {password}= e;
     auth.register({email,password})
     .then((res) => {
         if(res.status === 201){
@@ -212,9 +211,8 @@ function handlePasswordChange(e){
 
 
 
-
+// проверка токена при входе если уже залогинен клиент
   const [emailData,setEmailData] = React.useState({})
-
 
   React.useEffect(()=>{
       tokenCheck();
@@ -241,26 +239,12 @@ function handlePasswordChange(e){
       }
     }
 
-    // логин
-    const [inputEmaiLoginlData,setinputEmaiLoginlData] = React.useState({})
-    const [inputPassworLogindData,setinputPassworLogindData] = React.useState({})
 
-    function handleEmailLoginChange(e){
-        const {name, value} = e.target;
-        setinputEmaiLoginlData({[name]: value })
-       
-    }
-    function handlePassworLogindChange(e){
-        const {name, value} = e.target;
-        setinputPassworLogindData({[name]: value })
-       
-    }
-
+// Логин
     function onLoginSumbit (e){
-        e.preventDefault()
-        const {email}= inputEmaiLoginlData;
-        const {password}= inputPassworLogindData;
 
+        const {email}= e;
+        const {password}= e;
 
         auth.login({email,password})
         .then((res) => {
@@ -313,12 +297,6 @@ function handlePasswordChange(e){
                 <LogIn 
                 onLogin={onLogin} 
                 onLoginSumbit={onLoginSumbit}
-                inputEmaiLoginlData={inputEmaiLoginlData}
-                inputPassworLogindData={inputPassworLogindData}
-                setinputEmaiLoginlData={setinputEmaiLoginlData}
-                setinputPassworLogindData={setinputPassworLogindData}
-                handleEmailLoginChange={handleEmailLoginChange}
-                handlePassworLogindChange={handlePassworLogindChange}
                 />}
               />
 
@@ -329,13 +307,6 @@ function handlePasswordChange(e){
                 <Register 
                   onLogin={onLogin}
                   onRegister={onRegister}
-            
-                  inputEmailData={inputEmailData}
-                  inputPasswordData={inputPasswordData}
-                  setinputEmailData={setinputEmailData}
-                  setinputPasswordData={setinputPasswordData}
-                  handleEmailChange={handleEmailChange}
-                  handlePasswordChange={handlePasswordChange}
                   />}
               />
     
