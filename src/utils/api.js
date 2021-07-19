@@ -3,6 +3,7 @@ class Api {
       this.address = address;
       this.token = token;
     }
+    
     _checkStatus(result){
       if (result.ok) {
         return result.json()

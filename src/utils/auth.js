@@ -8,6 +8,14 @@ class Auth {
     console.log(this.email)
     
   }
+  _checkStatus(result){
+    if (result.ok) {
+      return result
+  } else {
+      return Promise.reject(`Ошибка: ${result.status}`)
+  }
+  }
+
   register({email,password}){
     return fetch(`${BASE_URL}/signup`, {
       method:'POST',
@@ -17,9 +25,9 @@ class Auth {
         body: JSON.stringify({email,password})
       })
       .then(result => {
-        return (result)
+       return this._checkStatus(result)
     })
-    .catch((err) => console.log(err))
+  
   }
 
 
@@ -34,11 +42,11 @@ class Auth {
       .then(res => res.json().then(data =>{
         if(data.token){
           localStorage.setItem('token', data.token)
-          return res;
+          return this._checkStatus(res)
         }
       })
 
-    .catch((err) => console.log(err)));
+    );
    }
 
 

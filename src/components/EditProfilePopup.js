@@ -8,12 +8,13 @@ function EditProfilePopup (props){
 
     // Подписка на контекст
     const currentUser = React.useContext(CurrentUserContext);
+
     // После загрузки текущего пользователя из API
     // его данные будут использованы в управляемых компонентах.
     React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-    }, [currentUser, props.isOpen]);
+    }, [currentUser]);
 
 
     function handleNameChange(e) {
@@ -27,7 +28,6 @@ function EditProfilePopup (props){
       
     function handleSubmit(e) {
         e.preventDefault();
-      
         // Передаём значения управляемых компонентов во внешний обработчик
         props.onUpdateUser({
           name,

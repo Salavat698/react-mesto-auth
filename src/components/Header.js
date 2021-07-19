@@ -1,10 +1,9 @@
-
+import React from 'react';
 import headerLogo from '../images/header-logo.svg'
 import { Link ,withRouter} from 'react-router-dom'; 
 function Header(props){
 
-    // function NavBar () {
-    //     const history = useHistory();
+
         function signOut(){
             localStorage.removeItem('token');
             props.history.push('/sign-in');

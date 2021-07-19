@@ -16,7 +16,7 @@ import auth from '../utils/auth';
 import LogIn from './LogIn';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
-
+import InfoTooltip from '../../src/components/InfoTooltip';
 function App(props) {
 
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -52,8 +52,7 @@ function App(props) {
     setIsAddPlacePopupOpen(false)
     setDeletQuestionPopup(false)
     setSelectedCard({})
-    setloggedIn(false)
-    
+    setstateOpenPopup(false)
   }
 
 
@@ -88,6 +87,7 @@ function App(props) {
 
 
   function handleUpdateUser (e){
+  
     api.updateUser(e)
     .then((res)=>{
       setCurrentUser(res)
@@ -168,8 +168,53 @@ function App(props) {
   function onLogin(){
     setloggedIn(true)
   }
+  // ПОДЫМАЕМ СТЕИТ НА НАДО ПО ЗАДАНИЮ
+  const [inputEmailData,setinputEmailData] = React.useState({value:''})
+  const [inputPasswordData,setinputPasswordData] = React.useState({value:''})
+
+
+  function handleEmailChange(e){
+
+    const {name, value} = e.target;
+    setinputEmailData({[name]: value })
+  
+   
+}
+function handlePasswordChange(e){
+ 
+    const {name, value} = e.target;
+    setinputPasswordData({[name]: value })
+   
+}
+
+  const [isSuccess,setisSuccess] = React.useState()
+  const [stateOpenPopup,setstateOpenPopup] = React.useState()
+
+  function onRegister (e){
+    e.preventDefault()
+    const {email}= inputEmailData;
+    const {password}= inputPasswordData;
+    auth.register({email,password})
+    .then((res) => {
+        if(res.status === 201){
+            setisSuccess(true)
+            setstateOpenPopup(true)
+            setTimeout(()=>{props.history.push('/sign-in')}, 3000)
+          } else {
+            setisSuccess(false)
+            setstateOpenPopup(true)
+            console.log('Что то пошло не так')
+          }
+          
+        }).catch((err) => console.log(err));
+}
+
+
+
+
 
   const [emailData,setEmailData] = React.useState({})
+
 
   React.useEffect(()=>{
       tokenCheck();
@@ -190,57 +235,110 @@ function App(props) {
             setloggedIn(true)
             props.history.push("/main")
           }
+          
         })
-
+        .catch((err) => console.log(err))
       }
+    }
+
+    // логин
+    const [inputEmaiLoginlData,setinputEmaiLoginlData] = React.useState({})
+    const [inputPassworLogindData,setinputPassworLogindData] = React.useState({})
+
+    function handleEmailLoginChange(e){
+        const {name, value} = e.target;
+        setinputEmaiLoginlData({[name]: value })
+       
+    }
+    function handlePassworLogindChange(e){
+        const {name, value} = e.target;
+        setinputPassworLogindData({[name]: value })
+       
+    }
+
+    function onLoginSumbit (e){
+        e.preventDefault()
+        const {email}= inputEmaiLoginlData;
+        const {password}= inputPassworLogindData;
+
+
+        auth.login({email,password})
+        .then((res) => {
+            if(res){
+                onLogin();
+                props.history.push('/main');
+              } else {
+                  console.log('Что-то пошло не так!')
+              }
+            }).catch((err) => console.log(err));
+            
     }
 
   return (
 
         <div className="App body-background">
           <CurrentCardsContext.Provider value={currentCards}>
-            <CurrentUserContext.Provider value={currentUser}>
+          <CurrentUserContext.Provider value={currentUser}>
             <Switch>
-
+           
               <Route exact path="/">
                   {loggedIn ? <Redirect to="/main"/> : <Redirect to="/sign-in"/>}
               </Route>
-
-              <Route  path="/main">
-                <ProtectedRoute
+        
+              <ProtectedRoute
+                  path="/main"
                   loggedIn={loggedIn}
-                  component={() => <Header userData={emailData.userData} />}
-                />
-                <ProtectedRoute
-                  loggedIn={loggedIn}
-                  component={Main}
-                  onEditAvatar={handleEditAvatarClick}
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace ={handleAddPlaceClick}
-                  onCardClick={handleCardClick}
-
-                  cards = {currentCards} 
-                  onCardLike ={handleCardLike}
-                  onCardDelete ={handleDeletQuestionPopup}
-                />
-          
-                <ProtectedRoute
-                  loggedIn={loggedIn}
-                  component={Footer}
-                />
-              </Route>
+                  component={() =>
+                    <>
+                     <Header userData={emailData.userData} />
+                     <Main
+                       loggedIn={loggedIn}
+                       component={Main}
+                       onEditAvatar={handleEditAvatarClick}
+                       onEditProfile={handleEditProfileClick}
+                       onAddPlace ={handleAddPlaceClick}
+                       onCardClick={handleCardClick}
+                       cards = {currentCards} 
+                       onCardLike ={handleCardLike}
+                       onCardDelete ={handleDeletQuestionPopup}
+                     />
+                     <Footer  loggedIn={loggedIn}/>
+                    </>
+                }
+              />       
               
               <Route 
                 path="/sign-in"
-                component={() => <LogIn onLogin={onLogin} />}
+                component={() => 
+                <LogIn 
+                onLogin={onLogin} 
+                onLoginSumbit={onLoginSumbit}
+                inputEmaiLoginlData={inputEmaiLoginlData}
+                inputPassworLogindData={inputPassworLogindData}
+                setinputEmaiLoginlData={setinputEmaiLoginlData}
+                setinputPassworLogindData={setinputPassworLogindData}
+                handleEmailLoginChange={handleEmailLoginChange}
+                handlePassworLogindChange={handlePassworLogindChange}
+                />}
               />
 
               <Route 
                 path="/sign-up" 
                 loggedIn={loggedIn}
-                component={Register}
+                component={() => 
+                <Register 
+                  onLogin={onLogin}
+                  onRegister={onRegister}
+            
+                  inputEmailData={inputEmailData}
+                  inputPasswordData={inputPasswordData}
+                  setinputEmailData={setinputEmailData}
+                  setinputPasswordData={setinputPasswordData}
+                  handleEmailChange={handleEmailChange}
+                  handlePasswordChange={handlePasswordChange}
+                  />}
               />
-          
+    
             </Switch>
 
 
@@ -254,7 +352,7 @@ function App(props) {
                 onCardDelete={handleCardDelete}
             />
             <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
-
+            <InfoTooltip isSuccess={isSuccess} stateOpenPopup={stateOpenPopup} onClose={closeAllPopups}/>
             </CurrentUserContext.Provider>
           </CurrentCardsContext.Provider>
          
