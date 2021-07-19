@@ -9,8 +9,8 @@ class Auth {
     
   }
   _checkStatus(result){
-    if (result) {
-      return result
+    if (result.ok) {
+      return result.json()
   } else {
       return Promise.reject(`Ошибка: ${result.status}`)
   }
@@ -40,16 +40,12 @@ class Auth {
         },
         body: JSON.stringify({email,password})
       })
-      .then(res => res.json().then(data =>{
-        if(data.token){
-          localStorage.setItem('token', data.token)
-          return this._checkStatus(res)
-        }
-      })
 
-    );
+      .then(result => {
+        return this._checkStatus(result)
+     })
+    
    }
-
 
    getToken(token) {
     return fetch(`${BASE_URL}/users/me`, {
@@ -60,8 +56,9 @@ class Auth {
         'Authorization': `Bearer ${token}`,
       }
     })
-    .then(res => res.json())
-    .then(data => data)
+    .then(result => {
+      return this._checkStatus(result)
+    })
   }
 }
 const auth= new Auth({password:'',email:''})

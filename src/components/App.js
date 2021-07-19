@@ -52,7 +52,7 @@ function App(props) {
     setIsAddPlacePopupOpen(false)
     setDeletQuestionPopup(false)
     setSelectedCard({})
-    setstateOpenPopup(false)
+    setStateOpenPopup(false)
   }
 
 
@@ -168,27 +168,10 @@ function App(props) {
   function onLogin(){
     setloggedIn(true)
   }
-  // ПОДЫМАЕМ СТЕИТ НА НАДО ПО ЗАДАНИЮ
-//   const [inputEmailData,setinputEmailData] = React.useState({value:''})
-//   const [inputPasswordData,setinputPasswordData] = React.useState({value:''})
 
-
-//   function handleEmailChange(e){
-
-//     const {name, value} = e.target;
-//     setinputEmailData({[name]: value })
-  
-   
-// }
-// function handlePasswordChange(e){
- 
-//     const {name, value} = e.target;
-//     setinputPasswordData({[name]: value })
-   
-// }
 
   const [isSuccess,setisSuccess] = React.useState()
-  const [stateOpenPopup,setstateOpenPopup] = React.useState()
+  const [stateOpenPopup,setStateOpenPopup] = React.useState(false)
 
   function onRegister (e){
     const {email}= e;
@@ -197,11 +180,11 @@ function App(props) {
     .then((res) => {
         if(res.status === 201){
             setisSuccess(true)
-            setstateOpenPopup(true)
+            setStateOpenPopup(true)
             setTimeout(()=>{props.history.push('/sign-in')}, 3000)
           } else {
             setisSuccess(false)
-            setstateOpenPopup(true)
+            setStateOpenPopup(true)
             console.log('Что то пошло не так')
           }
           
@@ -213,7 +196,7 @@ function App(props) {
 
 // проверка токена при входе если уже залогинен клиент
   const [emailData,setEmailData] = React.useState({})
-
+// перерисовую если функия выполнена по loggedIn(который тру или фалс)
   React.useEffect(()=>{
       tokenCheck();
     },[loggedIn])
@@ -239,7 +222,7 @@ function App(props) {
       }
     }
 
-
+    // 
 // Логин
     function onLoginSumbit (e){
 
@@ -248,12 +231,10 @@ function App(props) {
 
         auth.login({email,password})
         .then((res) => {
-            if(res){
+                localStorage.setItem('token', res.token)
                 onLogin();
                 props.history.push('/main');
-              } else {
-                  console.log('Что-то пошло не так!')
-              }
+     
             }).catch((err) => console.log(err));
             
     }
