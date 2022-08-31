@@ -11,6 +11,4 @@
 * html
 * css
 * bem
-* React.js
-* Express.js
-* Mongo.db
+* js
