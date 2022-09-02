@@ -12,3 +12,7 @@
 * css
 * bem
 * js
+
+### Запуск проект
+* npm init
+* npm start
